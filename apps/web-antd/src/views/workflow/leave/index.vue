@@ -62,7 +62,7 @@ const gridOptions: VxeGridProps = {
   id: 'workflow-leave-index',
   cellClassName: ({ row }) => {
     // 草稿状态 可点击
-    if (row.status === 'draft') {
+    if (row.status !== 'draft') {
       return 'cursor-pointer';
     }
   },
