@@ -6,7 +6,7 @@ import type { DictFallback } from './type';
 
 import type { DictData } from '#/api/system/dict/dict-data-model';
 
-import { computed, defineComponent, h } from 'vue';
+import { computed, defineComponent, h, isVNode } from 'vue';
 
 import { Spin, Tag } from 'ant-design-vue';
 import { isFunction, isString } from 'lodash-es';
@@ -83,7 +83,7 @@ export default defineComponent({
     };
   },
   render() {
-    const { color, cssClass, label, loading, fallback, value } = this;
+    const { color, cssClass, label, loading, fallback, value, $slots } = this;
 
     /**
      * 字典list为0 加载中
@@ -101,9 +101,17 @@ export default defineComponent({
      * 可为string/Vnode
      */
     if (label === null) {
-      // VNode
+      // 优先返回slot
+      if ($slots.fallback) {
+        return $slots.fallback(value);
+      }
+      // VNode / String
       if (isFunction(fallback)) {
-        return h(fallback(value));
+        const rValue = fallback(value);
+        if (isVNode(rValue)) {
+          return h(rValue);
+        }
+        return <div>{rValue}</div>;
       }
       // 默认显示 unknown 文案
       if (isString(fallback)) {
