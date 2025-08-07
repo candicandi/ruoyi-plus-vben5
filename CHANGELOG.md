@@ -8,6 +8,7 @@
 - 字典(DictTag)支持fallback属性(未匹配到字典项时的回显)
 - 微服务版本 logout接口在配置错误的情况返回401的提示(解决死循环调用logout接口)
 - Tinymce 保存图片id 提供`contentWithOssIdTransform`来显示私有桶图片
+- Vxe/Antd可编辑表格适配器(样式等) 解决浮层元素点击与失焦冲突导致无法选中的问题
 
 **REFACTOR**
 
