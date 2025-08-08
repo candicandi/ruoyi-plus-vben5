@@ -12,6 +12,7 @@
 
 **REFACTOR**
 
+- 流程表单详情重构 使用映射组件方案替代iframe显示 加载速度更快
 - Modal/Drawer中使用VxeTable tooltip需要设置更高的z-index 防止被遮挡
 - 字典(DictTag)使用tsx写法重构
 - 请假申请 按钮区域重构
