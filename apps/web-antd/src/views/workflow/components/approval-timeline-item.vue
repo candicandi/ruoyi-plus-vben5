@@ -5,7 +5,9 @@ import { onMounted, ref } from 'vue';
 
 import { VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
+import { cn } from '@vben/utils';
 
+import { MessageOutlined } from '@ant-design/icons-vue';
 import { TimelineItem } from 'ant-design-vue';
 
 import { ossInfo } from '#/api/system/oss';
@@ -49,6 +51,15 @@ onMounted(async () => {
           class="bg-primary size-[36px] rounded-full text-white"
           src=""
         />
+        <div
+          :class="
+            cn(
+              'absolute bottom-0 right-[-2px]',
+              'size-[12px] rounded-full bg-green-500',
+              'border-[2px] border-white',
+            )
+          "
+        ></div>
       </div>
     </template>
     <div class="ml-2 flex flex-col gap-0.5">
@@ -58,8 +69,13 @@ onMounted(async () => {
       </div>
       <div>{{ item.approveName }}</div>
       <div>{{ item.updateTime }}</div>
-      <div v-if="item.message" class="rounded-lg border p-1">
-        <div class="break-all opacity-70">{{ item.message }}</div>
+      <div
+        v-if="item.message"
+        class="rounded-lg border px-3 py-1"
+        :class="cn('flex gap-2')"
+      >
+        <MessageOutlined />
+        <div class="text-foreground/75 break-all">{{ item.message }}</div>
       </div>
       <div v-if="attachmentInfo.length > 0" class="flex flex-wrap gap-2">
         <!-- 这里下载的文件名不是原始文件名 -->
