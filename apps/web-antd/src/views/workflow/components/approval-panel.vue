@@ -393,197 +393,201 @@ async function handleCopy(text: string) {
 </script>
 
 <template>
-  <Card
-    v-if="task"
-    :body-style="{ overflowY: 'auto', height: '100%' }"
-    :loading="loading"
-    class="thin-scrollbar flex-1 overflow-y-hidden"
-    size="small"
-  >
-    <template #title>
-      <div class="flex items-center gap-2">
-        <div>编号: {{ task.id }}</div>
-        <CopyOutlined class="cursor-pointer" @click="handleCopy(task.id)" />
-      </div>
-    </template>
-    <template #extra>
-      <a-button size="small" @click="() => handleLoadInfo(task)">
-        <div class="flex items-center justify-center">
-          <span class="icon-[material-symbols--refresh] size-24px"></span>
-        </div>
-      </a-button>
-    </template>
-    <div class="flex flex-col gap-5 p-4">
-      <div class="flex flex-col gap-3">
-        <div class="flex items-center gap-2">
-          <div class="text-2xl font-bold">{{ task.flowName }}</div>
-          <div>
-            <component
-              :is="renderDict(task.flowStatus, DictEnum.WF_BUSINESS_STATUS)"
-            />
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <VbenAvatar
-            :alt="task?.createByName ?? ''"
-            class="bg-primary size-[28px] rounded-full text-white"
-            src=""
-          />
-          <span>{{ task.createByName }}</span>
-          <div class="flex items-center opacity-50">
-            <div class="flex items-center gap-1">
-              <span class="icon-[bxs--category-alt] size-[16px]"></span>
-              流程分类: {{ task.categoryName }}
-            </div>
-            <Divider type="vertical" />
-            <div class="flex items-center gap-1">
-              <span class="icon-[mdi--clock-outline] size-[16px]"></span>
-              提交时间: {{ task.createTime }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <Tabs v-if="currentFlowInfo" class="flex-1">
-        <TabPane key="1" tab="审批详情">
-          <ApprovalDetails
-            :current-flow-info="currentFlowInfo"
-            :iframe-loaded="iframeLoaded"
-            :iframe-height="iframeHeight"
-            :task="task"
-          />
-        </TabPane>
-        <TabPane key="2" tab="审批流程图">
-          <FlowPreview :instance-id="currentFlowInfo.instanceId" />
-        </TabPane>
-      </Tabs>
-    </div>
-    <!-- 固定底部 -->
-    <div class="h-[57px]"></div>
-    <div
-      v-if="showFooter"
-      class="border-t-solid bg-background absolute bottom-0 left-0 w-full border-t-[1px] p-3"
+  <div class="w-full">
+    <Card
+      v-if="task"
+      :body-style="{ overflowY: 'auto', height: '100%' }"
+      :loading="loading"
+      class="thin-scrollbar flex-1 overflow-y-hidden"
+      size="small"
     >
-      <div class="flex justify-end">
-        <Space v-if="type === 'myself'">
-          <a-button
-            v-if="revocable"
-            danger
-            ghost
-            type="primary"
-            :icon="h(RollbackOutlined)"
-            @click="handleCancel"
-          >
-            撤销申请
-          </a-button>
-          <a-button
-            type="primary"
-            ghost
-            v-if="editableAndRemoveable"
-            :icon="h(EditOutlined)"
-            @click="handleEdit"
-          >
-            重新编辑
-          </a-button>
-          <a-button
-            v-if="editableAndRemoveable"
-            danger
-            ghost
-            type="primary"
-            :icon="h(EditOutlined)"
-            @click="handleRemove"
-          >
-            删除
-          </a-button>
-        </Space>
-        <Space v-if="type === 'approve'">
-          <a-button
-            type="primary"
-            ghost
-            :icon="h(CheckOutlined)"
-            @click="handleApproval"
-          >
-            通过
-          </a-button>
-          <a-button
-            v-if="buttonPermissions?.termination"
-            danger
-            ghost
-            type="primary"
-            :icon="h(ExclamationCircleOutlined)"
-            @click="handleTermination"
-          >
-            终止
-          </a-button>
-          <a-button
-            v-if="buttonPermissions?.back"
-            danger
-            ghost
-            type="primary"
-            :icon="h(ArrowLeftOutlined)"
-            @click="handleRejection"
-          >
-            驳回
-          </a-button>
-          <Dropdown
-            :get-popup-container="getPopupContainer"
-            placement="bottomRight"
-          >
-            <template #overlay>
-              <Menu>
-                <MenuItem
-                  v-if="buttonPermissions?.trust"
-                  key="1"
-                  @click="() => delegationModalApi.open()"
-                >
-                  <UserOutlined class="mr-2" />委托
-                </MenuItem>
-                <MenuItem
-                  v-if="buttonPermissions?.transfer"
-                  key="2"
-                  @click="() => transferModalApi.open()"
-                >
-                  <RollbackOutlined class="mr-2" /> 转办
-                </MenuItem>
-                <MenuItem
-                  v-if="showMultiActions && buttonPermissions?.addSign"
-                  key="3"
-                  @click="() => addSignatureModalApi.open()"
-                >
-                  <UsergroupAddOutlined class="mr-2" /> 加签
-                </MenuItem>
-                <MenuItem
-                  v-if="showMultiActions && buttonPermissions?.subSign"
-                  key="4"
-                  @click="() => reductionSignatureModalApi.open()"
-                >
-                  <UsergroupDeleteOutlined class="mr-2" /> 减签
-                </MenuItem>
-              </Menu>
-            </template>
-            <a-button v-if="showButtonOther" :icon="h(MenuOutlined)">
-              其他
-            </a-button>
-          </Dropdown>
-          <ApprovalModal @complete="$emit('reload')" />
-          <RejectionModal @complete="$emit('reload')" />
-          <DelegationModal mode="single" @finish="handleDelegation" />
-          <TransferModal mode="single" @finish="handleTransfer" />
-          <AddSignatureModal mode="multiple" @finish="handleAddSignature" />
-          <ReductionSignatureModal
-            mode="multiple"
-            @finish="handleReductionSignature"
-          />
-        </Space>
-        <Space v-if="type === 'admin'">
-          <a-button @click="handleFlowInterfere"> 流程干预 </a-button>
-          <a-button @click="() => updateAssigneeModalApi.open()">
-            修改办理人
-          </a-button>
-          <FlowInterfereModal @complete="$emit('reload')" />
-          <UpdateAssigneeModal mode="single" @finish="handleUpdateAssignee" />
-        </Space>
+      <template #title>
+        <div class="flex items-center gap-2">
+          <div>编号: {{ task.id }}</div>
+          <CopyOutlined class="cursor-pointer" @click="handleCopy(task.id)" />
+        </div>
+      </template>
+      <template #extra>
+        <a-button size="small" @click="() => handleLoadInfo(task)">
+          <div class="flex items-center justify-center">
+            <span class="icon-[material-symbols--refresh] size-24px"></span>
+          </div>
+        </a-button>
+      </template>
+      <div class="flex flex-col gap-5 p-4">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2">
+            <div class="text-2xl font-bold">{{ task.flowName }}</div>
+            <div>
+              <component
+                :is="renderDict(task.flowStatus, DictEnum.WF_BUSINESS_STATUS)"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <VbenAvatar
+              :alt="task?.createByName ?? ''"
+              class="bg-primary size-[28px] rounded-full text-white"
+              src=""
+            />
+            <span>{{ task.createByName }}</span>
+            <div class="flex items-center opacity-50">
+              <div class="flex items-center gap-1">
+                <span class="icon-[bxs--category-alt] size-[16px]"></span>
+                流程分类: {{ task.categoryName }}
+              </div>
+              <Divider type="vertical" />
+              <div class="flex items-center gap-1">
+                <span class="icon-[mdi--clock-outline] size-[16px]"></span>
+                提交时间: {{ task.createTime }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <Tabs v-if="currentFlowInfo" class="flex-1">
+          <TabPane key="1" tab="审批详情">
+            <ApprovalDetails
+              :current-flow-info="currentFlowInfo"
+              :iframe-loaded="iframeLoaded"
+              :iframe-height="iframeHeight"
+              :task="task"
+            />
+          </TabPane>
+          <TabPane key="2" tab="审批流程图">
+            <FlowPreview :instance-id="currentFlowInfo.instanceId" />
+          </TabPane>
+        </Tabs>
       </div>
-    </div>
-  </Card>
-  <Fallback v-else title="点击左侧选择" />
+      <!-- 固定底部 -->
+      <div class="h-[57px]"></div>
+      <div
+        v-if="showFooter"
+        class="border-t-solid bg-background absolute bottom-0 left-0 w-full border-t-[1px] p-3"
+      >
+        <div class="flex justify-end">
+          <Space v-if="type === 'myself'">
+            <a-button
+              v-if="revocable"
+              danger
+              ghost
+              type="primary"
+              :icon="h(RollbackOutlined)"
+              @click="handleCancel"
+            >
+              撤销申请
+            </a-button>
+            <a-button
+              type="primary"
+              ghost
+              v-if="editableAndRemoveable"
+              :icon="h(EditOutlined)"
+              @click="handleEdit"
+            >
+              重新编辑
+            </a-button>
+            <a-button
+              v-if="editableAndRemoveable"
+              danger
+              ghost
+              type="primary"
+              :icon="h(EditOutlined)"
+              @click="handleRemove"
+            >
+              删除
+            </a-button>
+          </Space>
+          <Space v-if="type === 'approve'">
+            <a-button
+              type="primary"
+              ghost
+              :icon="h(CheckOutlined)"
+              @click="handleApproval"
+            >
+              通过
+            </a-button>
+            <a-button
+              v-if="buttonPermissions?.termination"
+              danger
+              ghost
+              type="primary"
+              :icon="h(ExclamationCircleOutlined)"
+              @click="handleTermination"
+            >
+              终止
+            </a-button>
+            <a-button
+              v-if="buttonPermissions?.back"
+              danger
+              ghost
+              type="primary"
+              :icon="h(ArrowLeftOutlined)"
+              @click="handleRejection"
+            >
+              驳回
+            </a-button>
+            <Dropdown
+              :get-popup-container="getPopupContainer"
+              placement="bottomRight"
+            >
+              <template #overlay>
+                <Menu>
+                  <MenuItem
+                    v-if="buttonPermissions?.trust"
+                    key="1"
+                    @click="() => delegationModalApi.open()"
+                  >
+                    <UserOutlined class="mr-2" />委托
+                  </MenuItem>
+                  <MenuItem
+                    v-if="buttonPermissions?.transfer"
+                    key="2"
+                    @click="() => transferModalApi.open()"
+                  >
+                    <RollbackOutlined class="mr-2" /> 转办
+                  </MenuItem>
+                  <MenuItem
+                    v-if="showMultiActions && buttonPermissions?.addSign"
+                    key="3"
+                    @click="() => addSignatureModalApi.open()"
+                  >
+                    <UsergroupAddOutlined class="mr-2" /> 加签
+                  </MenuItem>
+                  <MenuItem
+                    v-if="showMultiActions && buttonPermissions?.subSign"
+                    key="4"
+                    @click="() => reductionSignatureModalApi.open()"
+                  >
+                    <UsergroupDeleteOutlined class="mr-2" /> 减签
+                  </MenuItem>
+                </Menu>
+              </template>
+              <a-button v-if="showButtonOther" :icon="h(MenuOutlined)">
+                其他
+              </a-button>
+            </Dropdown>
+            <ApprovalModal @complete="$emit('reload')" />
+            <RejectionModal @complete="$emit('reload')" />
+            <DelegationModal mode="single" @finish="handleDelegation" />
+            <TransferModal mode="single" @finish="handleTransfer" />
+            <AddSignatureModal mode="multiple" @finish="handleAddSignature" />
+            <ReductionSignatureModal
+              mode="multiple"
+              @finish="handleReductionSignature"
+            />
+          </Space>
+          <Space v-if="type === 'admin'">
+            <a-button @click="handleFlowInterfere"> 流程干预 </a-button>
+            <a-button @click="() => updateAssigneeModalApi.open()">
+              修改办理人
+            </a-button>
+            <FlowInterfereModal @complete="$emit('reload')" />
+            <UpdateAssigneeModal mode="single" @finish="handleUpdateAssignee" />
+          </Space>
+        </div>
+      </div>
+    </Card>
+    <slot v-else name="empty">
+      <Fallback title="点击左侧选择" />
+    </slot>
+  </div>
 </template>

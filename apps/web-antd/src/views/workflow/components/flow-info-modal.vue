@@ -6,6 +6,8 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { Spin } from 'ant-design-vue';
+
 import { getTaskByBusinessId } from '#/api/workflow/instance';
 
 import { ApprovalPanel } from '.';
@@ -36,6 +38,14 @@ const [BasicModal, modalApi] = useVbenModal({
 
 <template>
   <BasicModal>
-    <ApprovalPanel :task="taskInfo" type="readonly" />
+    <!-- :task="taskInfo" -->
+    <ApprovalPanel type="readonly">
+      <template #empty>
+        <Spin
+          class="flex h-[200px] w-full items-center justify-center"
+          size="large"
+        />
+      </template>
+    </ApprovalPanel>
   </BasicModal>
 </template>
