@@ -18,7 +18,7 @@ public String getEncryptContent(HttpServletResponse servletResponse, String publ
 }
 ```
 
-## 需要导入依赖
+## 可能需要导入依赖
 
 详见hutool文档 https://doc.hutool.cn/pages/SmUtil/#%E5%BC%95%E5%85%A5bouncy-castle%E4%BE%9D%E8%B5%96
 
@@ -29,8 +29,6 @@ public String getEncryptContent(HttpServletResponse servletResponse, String publ
   <version>1.78.1</version>
 </dependency>
 ```
-
-否则会报错
 
 ## 前端怎么修改为SM4SM2
 
@@ -49,3 +47,14 @@ const symmetricEncryption: BaseSymmetricEncryption = new Sm4Encryption();
 ```
 
 修改对应的实现就行
+
+## 后端加密必须为hex字符串
+
+位置`ruoyi-common/ruoyi-common-encrypt/src/main/java/org/dromara/common/encrypt/filter/EncryptResponseBodyWrapper.java`
+
+使用SM相关修改为`xxxxHex`方法而非`base64`!!!
+
+```java
+EncryptUtils.encryptBySm2Hex();
+EncryptUtils.encryptBySm4Hex();
+```
