@@ -49,6 +49,9 @@
   --vxe-ui-font-primary-lighten-color: hsl(var(--primary) / 60%);
   --vxe-ui-font-primary-darken-color: hsl(var(--primary));
 
+  /* 拖拽列宽颜色 */
+  --vxe-ui-table-resizable-drag-line-color: hsl(var(--primary));
+
   /* --vxe-ui-table-fixed-scrolling-box-shadow-color: rgb(0 0 0 / 80%); */
 
   height: auto !important;
