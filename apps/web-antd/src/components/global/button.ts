@@ -16,8 +16,8 @@ export const GhostButton = defineComponent({
         {
           ...props,
           ...attrs,
-          type: 'primary',
-          ghost: true,
+          type: 'link',
+          // ghost: true,
           size: 'small',
         },
         slots,
