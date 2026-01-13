@@ -223,7 +223,8 @@ function handleSyncTenantConfig() {
             @confirm="handleSync(row)"
           >
             <ghost-button
-              class="btn-success"
+              variant="link"
+              color="green"
               v-access:code="['system:tenant:edit']"
             >
               {{ $t('pages.common.sync') }}

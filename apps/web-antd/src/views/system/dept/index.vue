@@ -155,7 +155,8 @@ function setExpandOrCollapse(expand: boolean) {
             {{ $t('pages.common.edit') }}
           </ghost-button>
           <ghost-button
-            class="btn-success"
+            variant="link"
+            color="green"
             v-access:code="['system:dept:add']"
             @click="handleSubAdd(row)"
           >

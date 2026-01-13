@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import type { VbenFormProps } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
+
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { nextTick } from 'vue';
 
-import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { getVxePopupContainer } from '@vben/utils';
 
 import { Popconfirm, Space } from 'antdv-next';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { categoryList, categoryRemove } from '#/api/workflow/category';
 
 import categoryModal from './category-modal.vue';
@@ -125,7 +128,8 @@ function collapseAll() {
             {{ $t('pages.common.edit') }}
           </ghost-button>
           <ghost-button
-            class="btn-success"
+            variant="link"
+            color="green"
             v-access:code="['workflow:category:edit']"
             @click.stop="handleAdd(row)"
           >
