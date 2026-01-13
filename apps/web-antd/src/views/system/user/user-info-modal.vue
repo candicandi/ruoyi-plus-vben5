@@ -124,20 +124,16 @@ const items = computed<DescriptionsProps['items']>(() => {
     },
     { label: '创建时间', content: currentUser.value.createTime },
     { label: '上次登录IP', content: currentUser.value.loginIp || '-' },
-    { label: '上次登录时间', content: currentUser.value.loginDate || '-' },
     {
       label: '上次登录时间',
       content: (
         <>
           <span>{currentUser.value.loginDate ?? '-'}</span>
-          <Tag
-            bordered={false}
-            class="ml-2"
-            color="processing"
-            v-if="diffLoginTime"
-          >
-            {diffLoginTime}前
-          </Tag>
+          {diffLoginTime.value && (
+            <Tag class="ml-2" color="processing">
+              {diffLoginTime.value}前
+            </Tag>
+          )}
         </>
       ),
     },

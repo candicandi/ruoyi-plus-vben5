@@ -1,26 +1,19 @@
 <script setup lang="ts">
+import type { MenuProps } from 'antdv-next';
+
 import type { VbenFormProps } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { User } from '#/api/system/user/model';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
-import { getVxePopupContainer } from '@vben/utils';
 
-import {
-  Avatar,
-  Dropdown,
-  Menu,
-  MenuItem,
-  Modal,
-  Popconfirm,
-  Space,
-} from 'antdv-next';
+import { Avatar, Dropdown, Modal, Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -61,7 +54,7 @@ const formOptions: VbenFormProps = {
       allowClear: true,
     },
   },
-  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
   handleReset: async () => {
     selectDeptId.value = [];
 
@@ -186,6 +179,26 @@ function handleResetPwd(record: User) {
 }
 
 const { hasAccessByCodes } = useAccess();
+const menuItems = computed(() => {
+  const items: MenuProps['items'] = [{ key: 'info', label: '用户信息' }];
+  if (hasAccessByCodes(['system:user:resetPwd'])) {
+    items.push({ key: 'resetPwd', label: '重置密码' });
+  }
+  return items;
+});
+
+function handleMenuClick(key: string, row: any) {
+  switch (key) {
+    case 'info': {
+      handleUserInfo(row);
+      break;
+    }
+    case 'resetPwd': {
+      handleResetPwd(row);
+      break;
+    }
+  }
+}
 </script>
 
 <template>
@@ -254,7 +267,6 @@ const { hasAccessByCodes } = useAccess();
                 {{ $t('pages.common.edit') }}
               </ghost-button>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 placement="left"
                 title="确认删除？"
                 @confirm="handleDelete(row)"
@@ -268,19 +280,13 @@ const { hasAccessByCodes } = useAccess();
                 </ghost-button>
               </Popconfirm>
             </Space>
-            <Dropdown placement="bottomRight">
-              <template #overlay>
-                <Menu>
-                  <MenuItem key="1" @click="handleUserInfo(row)">
-                    用户信息
-                  </MenuItem>
-                  <span v-access:code="['system:user:resetPwd']">
-                    <MenuItem key="2" @click="handleResetPwd(row)">
-                      重置密码
-                    </MenuItem>
-                  </span>
-                </Menu>
-              </template>
+            <Dropdown
+              placement="bottomRight"
+              :menu="{
+                items: menuItems,
+                onClick: (info) => handleMenuClick(info.key, row),
+              }"
+            >
               <a-button size="small" type="link">
                 {{ $t('pages.common.more') }}
               </a-button>
