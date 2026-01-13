@@ -1,11 +1,15 @@
 <script setup lang="tsx">
-import type { TimelineProps } from 'antdv-next';
+import type { TimelineItemProps, TimelineProps } from 'antdv-next';
 
 import type { Flow } from '#/api/workflow/instance/model';
 
-import { computed, h } from 'vue';
+import { computed } from 'vue';
 
-import { Empty, Timeline } from 'antdv-next';
+import { VbenAvatar } from '@vben/common-ui';
+import { cn } from '@vben/utils';
+
+import { UsergroupAddOutlined } from '@ant-design/icons-vue';
+import { Avatar, Empty, Timeline } from 'antdv-next';
 
 import ApprovalTimelineItem from './approval-timeline-item.vue';
 
@@ -17,10 +21,41 @@ const props = defineProps<Props>();
 
 const items = computed<TimelineProps['items']>(() => {
   const { list } = props;
-  return list.map((item) => ({
-    key: item.id,
-    content: h(ApprovalTimelineItem, { item }),
-  }));
+  return list.map((item) => {
+    const isMultiplePerson = item.approver?.split(',').length > 1;
+
+    const result: TimelineItemProps = {
+      key: item.id,
+      dot: (
+        <div class="relative rounded-full border">
+          {isMultiplePerson && (
+            <Avatar
+              class="bg-primary-400"
+              icon={<UsergroupAddOutlined />}
+              size={36}
+            />
+          )}
+
+          {!isMultiplePerson && (
+            <VbenAvatar
+              alt={item?.approveName ?? 'unknown'}
+              class="size-[36px] rounded-full bg-primary text-white"
+              src=""
+            />
+          )}
+          <div
+            class={cn(
+              'absolute bottom-0 right-[-2px]',
+              'size-[12px] rounded-full bg-green-500',
+              'border-[2px] border-white',
+            )}
+          ></div>
+        </div>
+      ),
+      children: <ApprovalTimelineItem item={item} />,
+    };
+    return result;
+  });
 });
 </script>
 

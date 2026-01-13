@@ -3,15 +3,10 @@ import type { Flow } from '#/api/workflow/instance/model';
 
 import { computed, h, onMounted, ref } from 'vue';
 
-import { VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 import { cn } from '@vben/utils';
 
-import {
-  MessageOutlined,
-  UsergroupAddOutlined,
-  UserOutlined,
-} from '@ant-design/icons-vue';
+import { MessageOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { Avatar } from 'antdv-next';
 
 import { ossInfo } from '#/api/system/oss';
@@ -52,31 +47,6 @@ const isMultiplePerson = computed(
 
 <template>
   <div>
-    <template>
-      <div class="relative rounded-full border">
-        <Avatar
-          class="bg-primary-400"
-          v-if="isMultiplePerson"
-          :size="36"
-          :icon="h(UsergroupAddOutlined)"
-        />
-        <VbenAvatar
-          v-else
-          :alt="item?.approveName ?? 'unknown'"
-          class="size-[36px] rounded-full bg-primary text-white"
-          src=""
-        />
-        <div
-          :class="
-            cn(
-              'absolute bottom-0 right-[-2px]',
-              'size-[12px] rounded-full bg-green-500',
-              'border-[2px] border-white',
-            )
-          "
-        ></div>
-      </div>
-    </template>
     <div class="mb-5 ml-2 flex flex-col gap-1">
       <div class="flex items-center gap-1">
         <div class="font-bold">{{ item.nodeName }}</div>
