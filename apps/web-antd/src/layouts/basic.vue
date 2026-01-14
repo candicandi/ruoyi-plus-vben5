@@ -29,6 +29,7 @@ import { $t } from '#/locales';
 import { resetRoutes } from '#/router';
 import { useAuthStore, useNotifyStore } from '#/store';
 import { useTenantStore } from '#/store/tenant';
+import { useVersionUpdate } from '#/utils/check-update';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 const userStore = useUserStore();
@@ -131,6 +132,8 @@ watch(
     immediate: true,
   },
 );
+// 检测版本更新
+useVersionUpdate();
 </script>
 
 <template>

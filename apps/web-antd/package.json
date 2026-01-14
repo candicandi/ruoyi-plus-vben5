@@ -52,6 +52,7 @@
     "pinia": "catalog:",
     "tinymce": "7.9.1",
     "unplugin-vue-components": "^0.27.3",
+    "version-polling": "^1.3.3",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
