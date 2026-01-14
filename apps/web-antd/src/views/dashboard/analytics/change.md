@@ -9,7 +9,13 @@
 - modal/drawer支持blur效果
 - 支持颜色与变体 需要绿色按钮？不用再写css了[Button 组件](https://ant.design/components/button-cn#button-demo-color-variant)
 - 支持颜色选择器[ColorPicker 组件](https://ant.design/components/color-picker-cn) 这个也是从antd5就开始有了 vue一直没有
+- 一些xxxItem组件 如`DescriotionsItem` `MenuItem` `TimeLineItem` 已经移除 使用对应父组件的`items`属性代替
 
 ## 框架级别的变化
 
 - message/modal/notification直接导入使用(静态方法)无法获取context 即主题/国际化无效 需要通过`window.xxx`进行调用
+
+## 已知问题
+
+- 夜间模式切换 antd组件不会跟随切换(dev是正常的 打包后会有问题) 等待antdv-next更新
+- message的duration无效

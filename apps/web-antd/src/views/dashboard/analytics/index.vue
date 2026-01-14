@@ -2,6 +2,8 @@
 import type { AnalysisOverviewItem } from '@vben/common-ui';
 import type { TabOption } from '@vben/types';
 
+import { ref } from 'vue';
+
 import {
   AnalysisChartCard,
   AnalysisChartsTabs,
@@ -15,7 +17,7 @@ import {
   SvgDownloadIcon,
 } from '@vben/icons';
 
-import { Alert } from 'antdv-next';
+import { Alert, Spin } from 'antdv-next';
 
 import AnalyticsTrends from './analytics-trends.vue';
 import AnalyticsVisitsData from './analytics-visits-data.vue';
@@ -72,6 +74,8 @@ function handleClick() {
     description: 'ant design',
   });
 }
+
+const loading = ref(true);
 </script>
 
 <template>
@@ -85,7 +89,12 @@ function handleClick() {
       </template>
     </Alert>
 
-    <MarkdownPreviewer v-model:value="md" />
+    <Spin :spinning="loading">
+      <MarkdownPreviewer
+        v-model:value="md"
+        @mounted="() => (loading = false)"
+      />
+    </Spin>
 
     <AnalysisOverview :items="overviewItems" />
     <AnalysisChartsTabs :tabs="chartTabs" class="mt-5">
