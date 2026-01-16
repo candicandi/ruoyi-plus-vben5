@@ -134,9 +134,8 @@ const isSuperAdmin = computed(() => {
 });
 
 function handleSyncTenantDict() {
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
-    iconType: 'warning',
     content: '确认同步租户字典？',
     onOk: async () => {
       await dictSyncTenant();
@@ -146,9 +145,8 @@ function handleSyncTenantDict() {
 }
 
 function handleSyncTenantConfig() {
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
-    iconType: 'warning',
     content: '确认同步租户参数配置？',
     onOk: async () => {
       await syncTenantConfig();

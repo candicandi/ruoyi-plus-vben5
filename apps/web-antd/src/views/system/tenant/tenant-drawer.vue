@@ -7,6 +7,7 @@ import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
 import { Button, Skeleton } from 'antdv-next';
+import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import { tenantAdd, tenantInfo, tenantUpdate } from '#/api/system/tenant';
@@ -136,6 +137,10 @@ async function handleConfirm() {
       return;
     }
     const data = cloneDeep(await formApi.getValues());
+    // dayjs转string
+    if (data.expireTime) {
+      data.expireTime = dayjs(data.expireTime).format('YYYY-MM-DD HH:mm:ss');
+    }
     await (isUpdate.value ? tenantUpdate(data) : tenantAdd(data));
     resetInitialized();
     emit('reload');

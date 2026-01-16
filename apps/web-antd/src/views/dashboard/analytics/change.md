@@ -10,6 +10,7 @@
 - 支持颜色与变体 需要绿色按钮？不用再写css了[Button 组件](https://ant.design/components/button-cn#button-demo-color-variant)
 - 支持颜色选择器[ColorPicker 组件](https://ant.design/components/color-picker-cn) 这个也是从antd5就开始有了 vue一直没有
 - 一些xxxItem组件 如`DescriotionsItem` `MenuItem` `TimeLineItem` 已经移除 使用对应父组件的`items`属性代替
+- DatePicker等必须绑定为`Dayjs`类型 不再支持`string`格式的绑定 相应需要提交自己转为string提交
 
 ## 框架级别的变化
 
