@@ -10,16 +10,13 @@ import linuxIcon from '@iconify/icons-devicon/linux';
 import windowsIcon from '@iconify/icons-devicon/windows8';
 import alipayIcon from '@iconify/icons-fa-brands/alipay';
 import androidIcon from '@iconify/icons-flat-color-icons/android-os';
-import comandLine from '@iconify/icons-flat-color-icons/command-line';
 import folderIcon from '@iconify/icons-flat-color-icons/folder';
 import defaultOsIcon from '@iconify/icons-ic/outline-computer';
-import memoryIcon from '@iconify/icons-la/memory';
 import chromeIcon from '@iconify/icons-logos/chrome';
 import firefoxIcon from '@iconify/icons-logos/firefox';
 import edgeIcon from '@iconify/icons-logos/microsoft-edge';
 import operaIcon from '@iconify/icons-logos/opera';
 import quarkIcon from '@iconify/icons-logos/quarkus-icon';
-import redisIcon from '@iconify/icons-logos/redis';
 import safariIcon from '@iconify/icons-logos/safari';
 import vueIcon from '@iconify/icons-logos/vue';
 import iphoneIcon from '@iconify/icons-majesticons/iphone-x-apps-line';
@@ -52,14 +49,6 @@ export const UserOutlined = createIconifyOfflineIcon(
   'ant-design:user-outlined',
   userOutlined,
 );
-
-// 缓存监控使用
-export const RedisIcon = createIconifyOfflineIcon('logos:redis', redisIcon);
-export const CommandLineIcon = createIconifyOfflineIcon(
-  'flat-color-icons:command-line',
-  comandLine,
-);
-export const MemoryIcon = createIconifyOfflineIcon('la:memory', memoryIcon);
 
 // 用户管理 导入
 // Excel图标

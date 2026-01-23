@@ -4,7 +4,6 @@ import type { RedisInfo } from '#/api/monitor/cache';
 import { onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { CommandLineIcon, MemoryIcon, RedisIcon } from '@vben/icons';
 
 import { Button, Card } from 'antdv-next';
 
@@ -57,7 +56,7 @@ async function loadInfo() {
       <Card class="lg:col-span-2" size="small">
         <template #title>
           <div class="flex items-center justify-start gap-[6px]">
-            <RedisIcon class="size-[16px]" />
+            <span class="icon-[skill-icons--redis-light] size-[16px]"></span>
             <span>redis信息</span>
           </div>
         </template>
@@ -74,7 +73,9 @@ async function loadInfo() {
       <Card size="small">
         <template #title>
           <div class="flex items-center gap-[6px]">
-            <CommandLineIcon class="size-[16px]" />
+            <span
+              class="icon-[flat-color-icons--command-line] size-[16px]"
+            ></span>
             <span>命令统计</span>
           </div>
         </template>
@@ -87,7 +88,7 @@ async function loadInfo() {
       <Card size="small">
         <template #title>
           <div class="flex items-center justify-start gap-[6px]">
-            <MemoryIcon class="size-[16px]" />
+            <span class="icon-[la--memory] size-[16px]"></span>
             <span>内存占用</span>
           </div>
         </template>
