@@ -55,7 +55,8 @@
     "test:e2e": "turbo run test:e2e",
     "update:deps": "npx taze -r -w",
     "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile",
-    "catalog": "pnpx codemod pnpm/catalog"
+    "catalog": "pnpx codemod pnpm/catalog",
+    "generate-offline-icons": "node scripts/generate-offline-icons.js"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

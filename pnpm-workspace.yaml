@@ -24,7 +24,7 @@ catalog:
   '@ctrl/tinycolor': ^4.1.0
   '@eslint/js': ^9.39.1
   '@faker-js/faker': ^9.9.0
-  '@iconify/json': ^2.2.406
+  '@iconify/json': 2.2.431
   '@iconify/tailwind': ^1.2.0
   '@iconify/vue': ^5.0.0
   '@intlify/core-base': ^11.1.7
