@@ -87,18 +87,27 @@ const currentFlowInfo = ref<FlowInfoResponse>();
  */
 const loading = ref(false);
 
+// 存放所有请求取消函数
+const abortList: (() => void)[] = [];
 async function handleLoadInfo(task: TaskInfo | undefined) {
   if (!task) {
     return null;
   }
   try {
     loading.value = true;
+    // 取消之前的请求 & 清空数组
+    abortList.forEach((abort) => abort());
+    abortList.length = 0;
 
     /**
      * 不为审批不需要调用`getTaskByTaskId`接口
      */
     if (props.type !== 'approve') {
-      const flowResp = await flowInfo(task.businessId);
+      const flowRespApi = flowInfo(task.businessId);
+      // 请求取消
+      abortList.push(flowRespApi.abort);
+      // 获取数据
+      const flowResp = await flowRespApi;
       currentFlowInfo.value = flowResp;
       return;
     }
@@ -107,10 +116,12 @@ async function handleLoadInfo(task: TaskInfo | undefined) {
      * getTaskByTaskId主要为了获取按钮权限 目前没有其他功能
      * 行数据(即props.task)获取的是没有按钮权限的
      */
-    const [flowResp, taskResp] = await Promise.all([
-      flowInfo(task.businessId),
-      getTaskByTaskId(task.id),
-    ]);
+    const flowInfoApi = flowInfo(task.businessId);
+    const taskRespApi = getTaskByTaskId(task.id);
+    // 请求取消
+    abortList.push(flowInfoApi.abort, taskRespApi.abort);
+
+    const [flowResp, taskResp] = await Promise.all([flowInfoApi, taskRespApi]);
 
     currentFlowInfo.value = flowResp;
     onlyForBtnPermissionTask.value = taskResp;
