@@ -1,8 +1,6 @@
 import type { FormSchemaGetter } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
-
 import { DictEnum } from '@vben/constants';
 import { VbenIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -53,15 +51,15 @@ export const yesNoOptions = [
 // （M目录 C菜单 F按钮）
 export const menuTypes = {
   C: {
-    icon: <span class="icons-[flat-color-icons--folder]"></span>,
+    icon: <span class="icon-[material-symbols--menu]"></span>,
     value: '菜单',
   },
   F: {
-    icon: <span class="icons-[mdi--button-pointer]"></span>,
+    icon: <span class="icon-[mdi--button-pointer]"></span>,
     value: '按钮',
   },
   M: {
-    icon: <span class="icons-[material-symbols--menu]"></span>,
+    icon: <span class="icon-[flat-color-icons--folder]"></span>,
     value: '目录',
   },
 };
@@ -112,7 +110,7 @@ export const columns: VxeGridProps['columns'] = [
         }
         return (
           <span class="flex items-center justify-center gap-1">
-            {h(current.icon, { class: 'size-[18px]' })}
+            {current.icon}
             <span>{current.value}</span>
           </span>
         );
