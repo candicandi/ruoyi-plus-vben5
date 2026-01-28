@@ -45,6 +45,8 @@ export const overridesPreferences = defineOverridesPreferences({
     // styleType: 'card',
   },
   theme: {
+    /** 默认主题模式 */
+    mode: 'light',
     /**
      * 浅色sidebar
      */
