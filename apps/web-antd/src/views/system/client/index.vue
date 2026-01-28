@@ -18,7 +18,7 @@ import {
   clientRemove,
 } from '#/api/system/client';
 import { ApiSwitch } from '#/components/global';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import clientDrawer from './client-drawer.vue';
 import { columns, querySchema } from './data';
@@ -104,8 +104,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(clientExport, '客户端数据', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(clientExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('客户端数据');
+  exportBlob({ data: formValues, fileName });
 }
 
 const { hasAccessByCodes } = useAccess();
@@ -124,7 +130,9 @@ async function handleChangeStatus(checked: boolean, row: Client) {
         <Space>
           <a-button
             v-access:code="['system:client:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
