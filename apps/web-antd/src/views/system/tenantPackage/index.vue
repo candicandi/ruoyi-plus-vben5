@@ -165,7 +165,7 @@ async function handleChangeStatus(checked: boolean, row: TenantPackage) {
       </template>
       <template #status="{ row }">
         <ApiSwitch
-          v-model:value="row.status"
+          :value="row.status === EnableStatus.Enable"
           :api="(checked) => handleChangeStatus(checked, row)"
           :disabled="!hasAccessByCodes(['system:tenantPackage:edit'])"
           @reload="tableApi.query()"
