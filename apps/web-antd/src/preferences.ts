@@ -9,9 +9,12 @@ export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
     /**
-     * 不要动这里  后端路由模式
+     * antdv-next改为mix模式
+     * - 后端路由 通过菜单管理进行配置
+     * - 前端路由 直接在`apps/web-antd/src/router/routes/modules`新增文件并默认导出即可
+     * 然后路由会进行合并
      */
-    accessMode: 'backend',
+    accessMode: 'mixed',
     /**
      * 不需要refresh token 由后端处理
      */
@@ -47,6 +50,10 @@ export const overridesPreferences = defineOverridesPreferences({
   theme: {
     /** 默认主题模式 */
     mode: 'light',
+    /**
+     * TODO: 发布正式版会改为默认
+     */
+    buttonWaveMode: 'Happy',
     /**
      * 浅色sidebar
      */
