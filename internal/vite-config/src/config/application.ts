@@ -6,7 +6,7 @@ import path, { relative } from 'node:path';
 
 import { findMonorepoRoot } from '@vben/node-utils';
 
-import { NodePackageImporter } from 'sass';
+import { NodePackageImporter } from 'sass-embedded';
 import { defineConfig, loadEnv, mergeConfig } from 'vite';
 
 import { defaultImportmapOptions, getDefaultPwaOptions } from '../options';
@@ -58,7 +58,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
     const applicationConfig: UserConfig = {
       base,
       build: {
-        rollupOptions: {
+        rolldownOptions: {
           output: {
             assetFileNames: '[ext]/[name]-[hash].[ext]',
             chunkFileNames: 'js/[name]-[hash].js',
@@ -67,20 +67,18 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
             manualChunks: {
               'antdv-next': ['antdv-next'],
             },
+            minify: isBuild
+              ? {
+                  compress: {
+                    dropDebugger: true,
+                  },
+                }
+              : false,
           },
         },
         target: 'es2015',
       },
       css: createCssOptions(injectGlobalScss),
-      esbuild: {
-        drop: isBuild
-          ? [
-              // 'console',
-              'debugger',
-            ]
-          : [],
-        legalComments: 'none',
-      },
       plugins,
       server: {
         host: true,
@@ -96,10 +94,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       },
     };
 
-    const mergedCommonConfig = mergeConfig(
-      await getCommonConfig(),
-      applicationConfig,
-    );
+    const mergedCommonConfig = mergeConfig(await getCommonConfig(), applicationConfig);
     return mergeConfig(mergedCommonConfig, vite);
   });
 }
