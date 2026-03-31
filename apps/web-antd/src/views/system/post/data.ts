@@ -112,6 +112,9 @@ export const drawerSchema: FormSchemaGetter = () => [
     label: '岗位排序',
     rules: 'required',
     defaultValue: 1,
+    componentProps: {
+      class: 'flex-1',
+    },
   },
   {
     component: 'RadioGroup',

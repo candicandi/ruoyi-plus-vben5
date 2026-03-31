@@ -96,6 +96,9 @@ export const drawerSchema: FormSchemaGetter = () => [
     label: '显示排序',
     rules: 'required',
     defaultValue: 1,
+    componentProps: {
+      class: 'flex-1',
+    },
   },
   {
     component: 'Input',
