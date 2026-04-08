@@ -23,6 +23,7 @@ import type {
   SwitchProps,
   TextAreaProps,
   TimePickerProps,
+  TimeRangePickerProps,
   TreeSelectProps,
   UploadProps,
 } from 'antdv-next';
@@ -35,6 +36,9 @@ import type {
   IconPickerProps,
 } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
+
+import type { TinymceProps } from '#/components/tinymce/src/type';
+import type { BaseUploadProps } from '#/components/upload/src/props';
 
 import { computed, defineAsyncComponent, defineComponent, h, ref } from 'vue';
 
@@ -201,9 +205,9 @@ type StrictComponentType =
 export type ComponentType = BaseFormComponentType | StrictComponentType;
 
 /**
- * 与 {@link ComponentType} 中注册的组件名一一对应，便于 Schema 上 `component` + `componentProps` 联动提示
+ * 组件 Props 定义
  */
-export interface ComponentPropsMap {
+interface ComponentPropsMapDef {
   ApiCascader: ApiComponentSharedProps & CascaderProps;
   ApiSelect: ApiComponentSharedProps & SelectProps;
   ApiTreeSelect: ApiComponentSharedProps & TreeSelectProps;
@@ -214,7 +218,9 @@ export interface ComponentPropsMap {
   DatePicker: DatePickerProps;
   DefaultButton: ButtonProps;
   Divider: DividerProps;
+  FileUpload: BaseUploadProps;
   IconPicker: IconPickerProps;
+  ImageUpload: BaseUploadProps;
   Input: InputProps;
   InputNumber: InputNumberProps;
   InputPassword: InputProps;
@@ -224,14 +230,24 @@ export interface ComponentPropsMap {
   RadioGroup: RadioGroupProps;
   RangePicker: RangePickerProps;
   Rate: RateProps;
+  RichTextarea: TinymceProps;
   Select: SelectProps;
   Space: SpaceProps;
   Switch: SwitchProps;
   Textarea: TextAreaProps;
   TimePicker: TimePickerProps;
+  TimeRangePicker: TimeRangePickerProps;
   TreeSelect: TreeSelectProps;
   Upload: UploadProps;
 }
+
+/**
+ * 与 {@link StrictComponentType} 一一对应，便于 Schema 上 `component` + `componentProps` 联动提示
+ * 通过 mapped type 约束: StrictComponentType 新增成员但 ComponentPropsMapDef 未添加对应键时会编译报错
+ */
+export type ComponentPropsMap = {
+  [K in StrictComponentType]: ComponentPropsMapDef[K];
+};
 
 async function initComponentAdapter() {
   const components: Record<StrictComponentType, Component> = {

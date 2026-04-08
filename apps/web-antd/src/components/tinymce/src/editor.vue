@@ -2,6 +2,8 @@
 import type { IPropTypes } from '@tinymce/tinymce-vue/lib/cjs/main/ts/components/EditorPropTypes';
 import type { Editor as EditorType } from 'tinymce/tinymce';
 
+import type { TinymceProps } from './type';
+
 import type { AxiosProgressEvent, UploadResult } from '#/api';
 
 import { computed, nextTick, ref, shallowRef, useAttrs, watch } from 'vue';
@@ -20,20 +22,12 @@ import {
 
 type InitOptions = IPropTypes['init'];
 
-interface Props {
-  height?: number | string;
-  options?: Partial<InitOptions>;
-  plugins?: string;
-  toolbar?: string;
-  disabled?: boolean;
-}
-
 defineOptions({
   name: 'Tinymce',
   inheritAttrs: false,
 });
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TinymceProps>(), {
   height: 400,
   options: () => ({}),
   plugins: defaultPlugins,
@@ -165,7 +159,7 @@ const initOptions = computed((): InitOptions => {
           })
           .catch((error) => {
             console.error('tinymce上传图片失败:', error);
-            // eslint-disable-next-line prefer-promise-reject-errors
+
             reject({ message: error.message, remove: true });
           });
       });
