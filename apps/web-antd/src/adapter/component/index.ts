@@ -53,6 +53,9 @@ const ImageUpload = defineAsyncComponent(() =>
   import('#/components/upload').then((res) => res.ImageUpload),
 );
 
+const AutoComplete = defineAsyncComponent(
+  () => import('antdv-next/dist/auto-complete/index'),
+);
 const Button = defineAsyncComponent(
   () => import('antdv-next/dist/button/index'),
 );
@@ -160,8 +163,8 @@ const withDefaultPlaceholder = <T extends Component>(
   });
 };
 
-// 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
-export type ComponentType =
+// 严格组件类型（不含 BaseFormComponentType 的 string 扩展），用于 components 对象的类型检查
+type StrictComponentType =
   | 'ApiCascader'
   | 'ApiSelect'
   | 'ApiTreeSelect'
@@ -192,8 +195,10 @@ export type ComponentType =
   | 'TimePicker'
   | 'TimeRangePicker'
   | 'TreeSelect'
-  | 'Upload'
-  | BaseFormComponentType;
+  | 'Upload';
+
+// 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
+export type ComponentType = BaseFormComponentType | StrictComponentType;
 
 /**
  * 与 {@link ComponentType} 中注册的组件名一一对应，便于 Schema 上 `component` + `componentProps` 联动提示
@@ -229,11 +234,11 @@ export interface ComponentPropsMap {
 }
 
 async function initComponentAdapter() {
-  const components: Partial<Record<ComponentType, Component>> = {
+  const components: Record<StrictComponentType, Component> = {
     // 如果你的组件体积比较大，可以使用异步加载
     // Button: () =>
     // import('xxx').then((res) => res.Button),
-
+    AutoComplete: withDefaultPlaceholder(AutoComplete, 'input'),
     ApiCascader: withDefaultPlaceholder(ApiComponent, 'select', {
       component: Cascader,
       fieldNames: { label: 'label', value: 'value', children: 'children' },
