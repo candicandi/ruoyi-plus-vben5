@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { IPropTypes } from '@tinymce/tinymce-vue/lib/cjs/main/ts/components/EditorPropTypes';
+import type { ProgressHandler } from 'alova';
 import type { Editor as EditorType } from 'tinymce/tinymce';
 
 import type { TinymceProps } from './type';
 
-import type { AxiosProgressEvent, UploadResult } from '#/api';
+import type { UploadResult } from '#/api';
 
 import { computed, nextTick, ref, shallowRef, useAttrs, watch } from 'vue';
 
@@ -145,11 +146,14 @@ const initOptions = computed((): InitOptions => {
         const file = blobInfo.blob();
         // const filename = blobInfo.filename();
         // 进度条事件
-        const progressEvent: AxiosProgressEvent = (e) => {
+        const progressEvent: ProgressHandler = (e) => {
           const percent = Math.trunc((e.loaded / e.total!) * 100);
           progress(percent);
         };
-        uploadApi(file, { onUploadProgress: progressEvent })
+        const alovaUploadApi = uploadApi(file);
+        // 监听上传进度
+        alovaUploadApi.onUpload(progressEvent);
+        alovaUploadApi
           .then((response) => {
             const { url, ossId } = response as unknown as UploadResult;
             console.log('tinymce上传图片:', url);
