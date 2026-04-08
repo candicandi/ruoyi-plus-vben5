@@ -48,9 +48,9 @@ async function initSetupVbenForm() {
 }
 
 const useVbenForm = useForm<ComponentType, ComponentPropsMap>;
+export type FormSchemaGetter = () => VbenFormSchema[];
 
 export { initSetupVbenForm, useVbenForm, z };
 
-export type VbenFormSchema = FormSchema<ComponentType>;
-export type FormSchemaGetter = () => VbenFormSchema[];
+export type VbenFormSchema = FormSchema<ComponentType, ComponentPropsMap>;
 export type VbenFormProps = FormProps<ComponentType, ComponentPropsMap>;
