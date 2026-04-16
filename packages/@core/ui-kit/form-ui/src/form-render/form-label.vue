@@ -26,6 +26,7 @@ const props = defineProps<Props>();
       </span>
       <!-- <VbenRenderContent :content="help" /> -->
     </VbenHelpTooltip>
+    <slot name="extra"></slot>
     <span v-if="colon && label" class="ml-0.5">:</span>
   </FormLabel>
 </template>

@@ -106,6 +106,7 @@ onMounted(() => notifyStore.startListeningMessage());
 function handleViewAll() {
   window.message.warning('暂未开放');
 }
+
 watch(
   () => ({
     enable: preferences.app.watermark,

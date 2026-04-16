@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SupportedLanguagesType } from '@vben/locales';
+import type { CustomPreferencesRecord } from '@vben/preferences';
 import type {
   BreadcrumbStyleType,
   BuiltinThemeType,
@@ -22,6 +23,7 @@ import {
   clearCache,
   preferences,
   resetPreferences,
+  updateCustomPreferences,
   usePreferences,
 } from '@vben/preferences';
 
@@ -44,6 +46,7 @@ import {
   ColorMode,
   Content,
   Copyright,
+  Custom,
   FontSize,
   Footer,
   General,
@@ -179,12 +182,15 @@ const widgetLockScreen = defineModel<boolean>('widgetLockScreen');
 const widgetRefresh = defineModel<boolean>('widgetRefresh');
 
 const {
+  customPreferences,
+  diffCustomPreference,
   diffPreference,
   isDark,
   isFullContent,
   isHeaderNav,
   isHeaderSidebarNav,
   isMixedNav,
+  preferencesExtension,
   isSideMixedNav,
   isSideMode,
   isSideNav,
@@ -195,8 +201,42 @@ const [Drawer] = useVbenDrawer();
 
 const activeTab = ref('appearance');
 
+const customPreferencesTab = computed(() => {
+  return preferencesExtension.value;
+});
+
+const customTabLabel = computed(() => {
+  return customPreferencesTab.value?.tabLabel
+    ? $t(customPreferencesTab.value.tabLabel)
+    : '';
+});
+
+const customTabTitle = computed(() => {
+  const title =
+    customPreferencesTab.value?.title || customPreferencesTab.value?.tabLabel;
+  return title ? $t(title) : '';
+});
+
+const mergedDiffPreference = computed(() => {
+  const result: Record<string, unknown> = {};
+
+  if (diffPreference.value) {
+    Object.assign(result, diffPreference.value);
+  }
+
+  if (diffCustomPreference.value) {
+    result.custom = diffCustomPreference.value;
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+});
+
+const showCustomTab = computed(() => {
+  return (customPreferencesTab.value?.fields.length ?? 0) > 0;
+});
+
 const tabs = computed((): SegmentedItem[] => {
-  return [
+  const items: SegmentedItem[] = [
     {
       label: $t('preferences.appearance'),
       value: 'appearance',
@@ -214,6 +254,15 @@ const tabs = computed((): SegmentedItem[] => {
       value: 'general',
     },
   ];
+
+  if (showCustomTab.value) {
+    items.push({
+      label: customTabLabel.value,
+      value: 'custom',
+    });
+  }
+
+  return items;
 });
 
 const showBreadcrumbConfig = computed(() => {
@@ -226,7 +275,7 @@ const showBreadcrumbConfig = computed(() => {
 });
 
 async function handleCopy() {
-  await copy(JSON.stringify(diffPreference.value, null, 2));
+  await copy(JSON.stringify(mergedDiffPreference.value, null, 2));
 
   message.copyPreferencesSuccess?.(
     $t('preferences.copyPreferencesSuccessTitle'),
@@ -241,11 +290,15 @@ async function handleClearCache() {
 }
 
 async function handleReset() {
-  if (!diffPreference.value) {
+  if (!mergedDiffPreference.value) {
     return;
   }
   resetPreferences();
   await loadLocaleMessages(preferences.app.locale);
+}
+
+function handleCustomPreferencesUpdate(updates: CustomPreferencesRecord) {
+  updateCustomPreferences(updates);
 }
 </script>
 
@@ -259,13 +312,13 @@ async function handleReset() {
       <template #extra>
         <div class="flex items-center">
           <VbenIconButton
-            :disabled="!diffPreference"
+            :disabled="!mergedDiffPreference"
             :tooltip="$t('preferences.resetTip')"
             class="relative"
             @click="handleReset"
           >
             <span
-              v-if="diffPreference"
+              v-if="mergedDiffPreference"
               class="absolute top-0.5 right-0.5 size-2 rounded-sm bg-primary"
             ></span>
             <RotateCw class="size-4" />
@@ -471,13 +524,22 @@ async function handleReset() {
               />
             </Block>
           </template>
+          <template #custom>
+            <Block :title="customTabTitle">
+              <Custom
+                :fields="customPreferencesTab?.fields || []"
+                :values="customPreferences"
+                @update="handleCustomPreferencesUpdate"
+              />
+            </Block>
+          </template>
         </VbenSegmented>
       </div>
 
       <template #footer>
         <VbenButton
           v-if="appEnableCopyPreferences"
-          :disabled="!diffPreference"
+          :disabled="!mergedDiffPreference"
           class="mx-4 w-full"
           size="sm"
           variant="default"
@@ -487,7 +549,7 @@ async function handleReset() {
           {{ $t('preferences.copyPreferences') }}
         </VbenButton>
         <VbenButton
-          :disabled="!diffPreference"
+          :disabled="!mergedDiffPreference"
           class="mr-4 w-full"
           size="sm"
           variant="ghost"
