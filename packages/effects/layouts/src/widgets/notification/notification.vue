@@ -33,6 +33,7 @@ const emit = defineEmits<{
   makeAll: [];
   onClick: [NotificationItem];
   read: [NotificationItem];
+  remove: [NotificationItem];
   viewAll: [];
 }>();
 

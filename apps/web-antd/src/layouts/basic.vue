@@ -154,6 +154,7 @@ useVersionUpdate();
         @make-all="notifyStore.setAllRead"
         @read="notifyStore.setRead"
         @view-all="handleViewAll"
+        @remove="notifyStore.removeMessage"
       />
     </template>
     <template #extra>
